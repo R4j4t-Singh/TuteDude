@@ -4,6 +4,7 @@ import backgroundService from "../background/background";
 function VideoPlayer() {
   const videoRef = useRef(null);
   const [progress, setProgress] = useState(0);
+  let intervalsId = [];
 
   useEffect(() => {
     if (videoRef) {
@@ -16,20 +17,32 @@ function VideoPlayer() {
           videoRef.current.currentTime = data.lastTimeStamp;
         }
       });
-    }
 
-    setInterval(() => {
+      startSendingData();
+    }
+  }, []);
+
+  const startSendingData = () => {
+    const id1 = setInterval(() => {
       const timeStamp = videoRef.current.currentTime;
       if (timeStamp > 0) {
         backgroundService.insertTime(timeStamp);
       }
     }, 2000);
 
-    setInterval(() => {
+    const id2 = setInterval(() => {
       const progress = backgroundService.getProgress();
+      if (progress >= 100) resetInterval();
       setProgress(progress);
     }, 5000);
-  }, []);
+
+    intervalsId.push(id1, id2);
+    intervalsId = [];
+  };
+
+  const resetInterval = () => {
+    intervalsId.forEach((id) => clearInterval(id));
+  };
 
   return (
     <>
