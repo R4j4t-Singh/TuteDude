@@ -12,6 +12,13 @@ function VideoPlayer() {
         backgroundService.setVideoData(id, duration);
       });
     }
+
+    setInterval(() => {
+      const timeStamp = videoRef.current.currentTime;
+      if (timeStamp > 0) {
+        backgroundService.insertTime(timeStamp);
+      }
+    }, 2000);
   }, []);
 
   return (
