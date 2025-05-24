@@ -21,14 +21,14 @@ function VideoPlayer() {
           if (data.status === "COMPLETED") {
             setProgress(100);
             videoRef.current.currentTime = duration;
+            return;
           } else {
             setProgress(data.progress);
             videoRef.current.currentTime = data.lastTimeStamp;
           }
         }
+        startSendingData();
       });
-
-      startSendingData();
       setloading(false);
     }
   }, []);

@@ -9,6 +9,7 @@ let intervalIds = [];
 const getSetVideoData = async (id, duration) => {
   videoId = id;
   videoLength = duration;
+  let status;
 
   const lastState = localStorage.getItem(videoId);
   if (lastState && lastState != "") {
@@ -16,19 +17,22 @@ const getSetVideoData = async (id, duration) => {
     recordedIntervals = JSON.parse(lastState);
   } else {
     const data = await dataService.getData(id);
-    if (data && data.watchedTimeline) {
-      recordedIntervals = JSON.parse(data.watchedTimeline);
+    if (data) {
+      if (data.watchedTimeline)
+        recordedIntervals = JSON.parse(data.watchedTimeline);
+      status = data.status;
     } else {
       dataService.addData(id);
     }
   }
-  const progress = getProgress();
-  if (progress >= 100) {
+
+  if (status === "COMPLETED") {
     return {
-      status: "COMPLETED",
+      status,
     };
   } else {
     saveData();
+    const progress = getProgress();
     if (recordedIntervals.length > 0) {
       return {
         status: "PENDING",
@@ -52,7 +56,13 @@ const getProgress = () => {
   const totalIntervals = Math.floor(videoLength / interval);
   const progress = (recordedIntervals.length / totalIntervals) * 100;
   if (progress >= 100) {
-    localStorage.setItem(videoId, JSON.stringify(recordedIntervals));
+    const data = JSON.stringify({
+      videoId: videoId,
+      timeline: JSON.stringify(recordedIntervals),
+      status: "COMPLETED",
+    });
+    dataService.updateData(videoId, data);
+    localStorage.removeItem(videoId);
     resetInterval();
   }
   return progress > 100 ? progress - (progress % 100) : progress;
@@ -66,7 +76,11 @@ const saveData = () => {
   }, 5000);
 
   const id2 = setInterval(async () => {
-    await dataService.updateData(videoId, recordedIntervals);
+    const data = JSON.stringify({
+      videoId: videoId,
+      timeline: JSON.stringify(recordedIntervals),
+    });
+    await dataService.updateData(videoId, data);
   }, 20000);
 
   intervalIds.push(id1, id2);

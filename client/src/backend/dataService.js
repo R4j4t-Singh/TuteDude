@@ -35,17 +35,14 @@ const addData = async (id) => {
   }
 };
 
-const updateData = async (id, timeline) => {
+const updateData = async (id, data) => {
   try {
     await fetch(url, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({
-        videoId: id,
-        timeline: JSON.stringify(timeline),
-      }),
+      body: data,
     });
   } catch (error) {
     console.log("error");
