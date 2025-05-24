@@ -4,7 +4,7 @@ const interval = 5;
 let videoId;
 let recordedIntervals = [];
 let videoLength;
-let intervalId = null;
+let intervalIds = [];
 
 const getSetVideoData = async (id, duration) => {
   videoId = id;
@@ -59,18 +59,21 @@ const getProgress = () => {
 };
 
 const saveData = () => {
-  intervalId = setInterval(() => {
+  const id1 = setInterval(() => {
     if (videoId) {
       localStorage.setItem(videoId, JSON.stringify(recordedIntervals));
     }
   }, 5000);
+
+  const id2 = setInterval(async () => {
+    await dataService.updateData(videoId, recordedIntervals);
+  }, 20000);
+
+  intervalIds.push(id1, id2);
 };
 
 const resetInterval = () => {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
-  }
+  intervalIds.forEach((id) => clearInterval(id));
 };
 
 const backgroundService = { getSetVideoData, insertTime, getProgress };

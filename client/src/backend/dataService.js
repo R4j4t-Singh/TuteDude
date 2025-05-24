@@ -35,6 +35,23 @@ const addData = async (id) => {
   }
 };
 
-const dataService = { getData, addData };
+const updateData = async (id, timeline) => {
+  try {
+    await fetch(url, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId: id,
+        timeline: JSON.stringify(timeline),
+      }),
+    });
+  } catch (error) {
+    console.log("error");
+  }
+};
+
+const dataService = { getData, addData, updateData };
 
 export default dataService;
