@@ -13,9 +13,14 @@ const insertTime = (timeStamp) => {
   if (!recordedIntervals.includes(currentInterval)) {
     recordedIntervals.push(currentInterval);
   }
-  console.log(recordedIntervals);
 };
 
-const backgroundService = { setVideoData, insertTime };
+const getProgress = () => {
+  const totalIntervals = Math.floor(videoLength / interval);
+  const progress = (recordedIntervals.length / totalIntervals) * 100;
+  return progress > 100 ? progress - (progress % 100) : progress;
+};
+
+const backgroundService = { setVideoData, insertTime, getProgress };
 
 export default backgroundService;

@@ -20,6 +20,11 @@ function VideoPlayer() {
         backgroundService.insertTime(timeStamp);
       }
     }, 2000);
+
+    setInterval(() => {
+      const progress = backgroundService.getProgress();
+      setProgress(progress);
+    }, 5000);
   }, []);
 
   return (
