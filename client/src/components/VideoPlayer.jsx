@@ -10,7 +10,11 @@ function VideoPlayer() {
       videoRef.current.addEventListener("loadedmetadata", () => {
         const id = "123";
         const duration = videoRef.current.duration;
-        backgroundService.setVideoData(id, duration);
+        const data = backgroundService.getSetVideoData(id, duration);
+        if (data) {
+          setProgress(data.progress);
+          videoRef.current.currentTime = data.lastTimeStamp;
+        }
       });
     }
 

@@ -3,9 +3,22 @@ let videoId;
 let recordedIntervals = [];
 let videoLength;
 
-const setVideoData = (id, duration) => {
+const getSetVideoData = (id, duration) => {
   videoId = id;
   videoLength = duration;
+  const lastState = localStorage.getItem(videoId);
+  if (lastState && lastState != "") {
+    console.log(JSON.parse(lastState));
+    recordedIntervals = JSON.parse(lastState);
+    const progress = getProgress();
+    const lastTimeStamp =
+      recordedIntervals[recordedIntervals.length - 1] * interval;
+    return {
+      progress,
+      lastTimeStamp,
+    };
+  }
+  return null;
 };
 
 const insertTime = (timeStamp) => {
@@ -27,6 +40,6 @@ setInterval(() => {
   }
 }, 5000);
 
-const backgroundService = { setVideoData, insertTime, getProgress };
+const backgroundService = { getSetVideoData, insertTime, getProgress };
 
 export default backgroundService;
