@@ -21,6 +21,12 @@ const getProgress = () => {
   return progress > 100 ? progress - (progress % 100) : progress;
 };
 
+setInterval(() => {
+  if (videoId) {
+    localStorage.setItem(videoId, JSON.stringify(recordedIntervals));
+  }
+}, 5000);
+
 const backgroundService = { setVideoData, insertTime, getProgress };
 
 export default backgroundService;
