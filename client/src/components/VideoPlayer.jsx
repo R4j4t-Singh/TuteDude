@@ -1,13 +1,18 @@
 import React, { useRef, useEffect, useState } from "react";
 import backgroundService from "../background/background";
+import videoService from "../backend/videoService.js";
 
 function VideoPlayer() {
   const videoRef = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [video, setVideo] = useState(null);
+  const [loading, setloading] = useState(true);
+  const videoId = "68316aaecbc4e7c7d5c40bf2";
   let intervalsId = [];
 
   useEffect(() => {
     if (videoRef) {
+      getVideo();
       videoRef.current.addEventListener("loadedmetadata", () => {
         const id = "123";
         const duration = videoRef.current.duration;
@@ -19,8 +24,16 @@ function VideoPlayer() {
       });
 
       startSendingData();
+      setloading(false);
     }
   }, []);
+
+  const getVideo = async () => {
+    const data = await videoService.getVideoData(videoId);
+    if (data) {
+      setVideo(data.video);
+    }
+  };
 
   const startSendingData = () => {
     const id1 = setInterval(() => {
@@ -46,13 +59,9 @@ function VideoPlayer() {
 
   return (
     <>
+      {loading && <h2>Please wait...</h2>}
       <div className="mt-8 p-4 flex justify-center">
-        <video
-          src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
-          controls
-          width="1000px"
-          ref={videoRef}
-        />
+        <video src={video?.url} controls width="1000px" ref={videoRef} />
       </div>
       <div className="mx-8">
         <div className="mt-3 w-full h-2 bg-gray-300 rounded-full">
