@@ -13,13 +13,18 @@ function VideoPlayer() {
   useEffect(() => {
     if (videoRef) {
       getVideo();
-      videoRef.current.addEventListener("loadedmetadata", () => {
-        const id = "123";
+      videoRef.current.addEventListener("loadedmetadata", async () => {
         const duration = videoRef.current.duration;
-        const data = backgroundService.getSetVideoData(id, duration);
+        const data = await backgroundService.getSetVideoData(videoId, duration);
+
         if (data) {
-          setProgress(data.progress);
-          videoRef.current.currentTime = data.lastTimeStamp;
+          if (data.status === "COMPLETED") {
+            setProgress(100);
+            videoRef.current.currentTime = duration;
+          } else {
+            setProgress(data.progress);
+            videoRef.current.currentTime = data.lastTimeStamp;
+          }
         }
       });
 

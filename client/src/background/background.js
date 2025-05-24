@@ -1,26 +1,43 @@
+import dataService from "../backend/dataService";
+
 const interval = 5;
 let videoId;
 let recordedIntervals = [];
 let videoLength;
 let intervalId = null;
 
-const getSetVideoData = (id, duration) => {
+const getSetVideoData = async (id, duration) => {
   videoId = id;
   videoLength = duration;
+
   const lastState = localStorage.getItem(videoId);
   if (lastState && lastState != "") {
     console.log(JSON.parse(lastState));
     recordedIntervals = JSON.parse(lastState);
-    const progress = getProgress();
-    const lastTimeStamp =
-      recordedIntervals[recordedIntervals.length - 1] * interval;
-    saveData();
-    return {
-      progress,
-      lastTimeStamp,
-    };
+  } else {
+    const data = await dataService.getData(id);
+    if (data && data.watchedTimeline) {
+      recordedIntervals = JSON.parse(data.watchedTimeline);
+    } else {
+      dataService.addData(id);
+    }
   }
-  saveData();
+  const progress = getProgress();
+  if (progress >= 100) {
+    return {
+      status: "COMPLETED",
+    };
+  } else {
+    saveData();
+    if (recordedIntervals.length > 0) {
+      return {
+        status: "PENDING",
+        lastTimeStamp:
+          recordedIntervals[recordedIntervals.length - 1] * interval,
+        progress,
+      };
+    }
+  }
   return null;
 };
 
