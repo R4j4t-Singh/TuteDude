@@ -7,7 +7,7 @@ const dataSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pednding", "completed"],
+    enum: ["PENDING", "COMPLETED"],
   },
   watchedTimeline: String,
 });
