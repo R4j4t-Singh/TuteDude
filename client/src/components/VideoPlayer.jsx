@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import backgroundService from "../background/background";
 
 function VideoPlayer() {
   const videoRef = useRef(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (videoRef) {
@@ -30,6 +31,17 @@ function VideoPlayer() {
           width="1000px"
           ref={videoRef}
         />
+      </div>
+      <div className="mx-8">
+        <div className="mt-3 w-full h-2 bg-gray-300 rounded-full">
+          <div
+            className="h-full bg-blue-500 rounded-full transition-all duration-200"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+        <div className="text-sm text-gray-600 mt-1">
+          Watched: {progress.toFixed()}%
+        </div>
       </div>
     </>
   );
