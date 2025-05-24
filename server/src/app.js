@@ -10,4 +10,11 @@ app.use(cors());
 
 await connectDB();
 
+// routes
+import videoRouter from "./routes/video.route.js";
+import watchedDataRouter from "./routes/watchedData.route.js";
+
+app.use("/api/video", videoRouter);
+app.use("/api/watched-data", watchedDataRouter);
+
 export default app;
