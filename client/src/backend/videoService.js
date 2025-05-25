@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/api/videos/";
+const url = `${import.meta.env.VITE_BACKEND_URL}/videos/`;
 
 const getVideoData = async (id) => {
   try {

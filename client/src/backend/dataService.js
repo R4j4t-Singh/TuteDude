@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/api/watched-data/";
+const url = `${import.meta.env.VITE_BACKEND_URL}/watched-data/`;
 
 const getData = async (id) => {
   try {
